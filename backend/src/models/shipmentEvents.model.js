@@ -1,0 +1,15 @@
+import mongoose from "mongoose";
+
+const shipmentEventSchema = new mongoose.Schema({
+    shipmentId: { type: mongoose.Schema.Types.ObjectId, ref: "Shipment", required: true },
+    status: {
+        type: String,
+        enum: ["CREATED", "ASSIGNED", "PICKED_UP", "IN_TRANSIT", "DELIVERED"],
+        required: true
+    },
+    location: { type: String, required: true },
+    timestamp: { type: Date, required: true }
+}, { timestamps: true });
+
+export const shipmentEventModel = mongoose.model("ShipmentEvent", shipmentEventSchema);
+export default shipmentEventModel;

@@ -1,0 +1,10 @@
+import mongoose from "mongoose";
+
+const warehouseSchema = new mongoose.Schema({
+    name: { type: String, required: true },
+    address: { type: String, required: true },
+    capacityTons: { type: Number }
+}, { timestamps: true });
+
+export const warehouseModel = mongoose.model("Warehouse", warehouseSchema);
+export default warehouseModel;

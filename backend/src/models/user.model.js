@@ -7,7 +7,7 @@ const userSchema = new mongoose.Schema({
     userType: { type: String, enum: ["WAREHOUSE_USER", "TRUCK_DEALER"], required: true },
     accessToken: { type: String },
     refreshToken: { type: String },
-    verifyCode: { type: Number },
+    verifyCode: { type: String },
     verifyCodeExpiry: { type: Date },
     isVerified: { type: Boolean, default: false }
 }, { timestamps: true });

@@ -2,9 +2,10 @@ import mongoose from "mongoose";
 
 const userSchema = new mongoose.Schema({
     name: { type: String, required: true },
-    email: { type: String, required: true, unique: true },
+    email: { type: String, required: true, unique: true, lowercase: true, trim: true },
     phoneNumber: { type: String, required: true },
     userType: { type: String, enum: ["WAREHOUSE_USER", "TRUCK_DEALER"], required: true },
+    password: { type: String, required: true },
     accessToken: { type: String },
     refreshToken: { type: String },
     verifyCode: { type: String },

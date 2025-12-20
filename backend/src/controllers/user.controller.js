@@ -3,6 +3,8 @@ class UserController {
 
     async getMe(req, res) {
         try {
+            console.log("Cookies: ")
+            console.log(req.cookies);
             const user = req.user;
             console.log(user);
             if (!user) {

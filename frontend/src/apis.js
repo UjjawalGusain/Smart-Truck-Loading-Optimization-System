@@ -23,7 +23,8 @@ const APIS = {
     login: `${BASE_URL}/api/auth/login`,
     verifyOtp: `${BASE_URL}/api/auth/verify-otp`,
 
-    getMe: `${BASE_URL}/api/user/me`, // protected
+    getMe: `${BASE_URL}/api/user/me`, //protected
+    getAllWarehouses: `${BASE_URL}/api/warehouse/get-warehouses`, //protected
 
 }
 

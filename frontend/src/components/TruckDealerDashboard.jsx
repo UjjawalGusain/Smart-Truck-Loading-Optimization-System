@@ -1,4 +1,4 @@
-import { useUser } from "../context/authContext.jsx";
+import { useUser } from "../hooks/useUser.js";
 
 const TruckDealerDashboard = () => {
     const { user, loading } = useUser();

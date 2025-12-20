@@ -1,4 +1,4 @@
-import { useUser } from "../../context/authContext.jsx";
+import { useUser } from "../../hooks/useUser.js";
 import WarehouseDashboard from "../../components/WarehouseUserDashboard.jsx";
 import TruckDealerDashboard from "../../components/TruckDealerDashboard.jsx";
 

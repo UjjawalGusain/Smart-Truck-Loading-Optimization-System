@@ -235,10 +235,15 @@ class authController {
 
                 const loggedInUser = await User.findById(existingUser._id).select("-password -refreshToken")
 
+                const isProd = process.env.STAGE === "PRODUCTION";
+
                 const options = {
                     httpOnly: true,
-                    secure: true
-                }
+                    secure: isProd,
+                    sameSite: isProd ? "none" : "lax",
+                    path: "/",
+                    maxAge: 7 * 24 * 60 * 60 * 1000,
+                };
 
                 return res
                     .status(200)

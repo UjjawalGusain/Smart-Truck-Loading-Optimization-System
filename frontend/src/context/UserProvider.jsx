@@ -1,10 +1,6 @@
-import { createContext, useContext, useState, useEffect } from "react";
+import { useContext, useState, useEffect } from "react";
 import APIS, { privateApi } from "../apis.js";
-
-
-const UserContext = createContext();
-
-export const useUser = () => useContext(UserContext);
+import { UserContext } from "./userContext.js";
 
 export const UserProvider = ({ children }) => {
     const [user, setUser] = useState(null);

@@ -77,6 +77,19 @@ class WarehouseController {
         }
     }
 
+    async getAllWarehouses(req, res) {
+        try {
+            const allUserWarehouses = await WarehouseUser.find({ userId: req.user._id });
+
+            const warehouseIds = allUserWarehouses.map(u => u.warehouseId);
+            const warehouses = await Warehouse.find({ _id: { $in: warehouseIds } });
+
+            return res.status(200).json({ message: "All warehouses sent", warehouses });
+        } catch (error) {
+            return res.status(500).json({ message: "Error fetching warehouses", error });
+        }
+    }
+
 }
 
 export default new WarehouseController();

@@ -8,7 +8,7 @@ import authRouter from "./routes/auth.route.js";
 import warehouseRouter from "./routes/warehouse.route.js";
 import truckDealerRouter from "./routes/truckDealer.route.js";
 import userRouter from "./routes/user.route.js";
-
+import shipmentRouter from "./routes/shipment.route.js";
 
 const app = express();
 const PORT = process.env.PORT;
@@ -39,6 +39,7 @@ app.use('/api/auth', authRouter);
 app.use('/api/warehouse', warehouseRouter);
 app.use('/api/truck-dealer', truckDealerRouter);
 app.use('/api/user', userRouter);
+app.use('/api/shipment', shipmentRouter);
 
 
 app.listen(PORT, () => {

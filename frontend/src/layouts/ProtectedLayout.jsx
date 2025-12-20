@@ -1,5 +1,5 @@
 import { Navigate, Outlet } from "react-router-dom";
-import { useUser } from "../context/authContext.jsx";
+import { useUser } from "../hooks/useUser.js";
 
 const ProtectedRoute = ({ redirectTo = "/login" }) => {
     const { user, loading } = useUser();

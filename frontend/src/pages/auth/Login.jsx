@@ -1,7 +1,8 @@
 import { useState } from "react";
-import { useUser } from "../../context/authContext.jsx"
+import { useUser } from "../../hooks/useUser.js"
 import APIS, { publicApi } from "../../apis.js";
 import { useNavigate } from "react-router-dom";
+import axios from "axios";
 const Login = () => {
 
     const { setUser } = useUser();
@@ -20,20 +21,24 @@ const Login = () => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+
         try {
-            const res = await publicApi.post(APIS.login, form);
+            const res = await axios.post(APIS.login, form, {
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                withCredentials: true, // important to send/receive cookies
+            });
+
             console.log("Login successful");
             console.log(res);
-            setUser(res.data.user);
-            navigate('/dashboard');
 
+            setUser(res.data.user);
+            navigate("/dashboard");
         } catch (error) {
             console.error(error.response?.data || error.message);
         }
-
-
     };
-
     return (
         <div className="flex w-full h-screen">
             <div className="w-full lg:w-1/2 flex justify-center items-center bg-gray-50">

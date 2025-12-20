@@ -2,7 +2,7 @@ import getOtp, { hashOtp, compareOtp } from "../utils/createOtp.js";
 import User from "./../models/user.model.js"
 import { object, string, number, mixed } from 'yup';
 import transporter from "../services/nodemailerEmail.js";
-import { hashPassword } from "../utils/hashPassword.js";
+import { hashPassword, comparePassword } from "../utils/hashPassword.js";
 
 let userSchema = object({
     name: string().required('name required'),
@@ -25,6 +25,28 @@ const verifyOtpSchema = object({
     otp: string().matches(/^\d{4,6}$/).required(),
 });
 
+const loginSchema = object({
+    email: string().email().required(),
+    password: string().required(),
+});
+
+
+const generateAccessAndRefereshTokens = async (userId) => {
+    try {
+        const user = await User.findById(userId)
+        const accessToken = user.generateAccessToken()
+        const refreshToken = user.generateRefreshToken()
+
+        user.refreshToken = refreshToken
+        await user.save({ validateBeforeSave: false })
+
+        return { accessToken, refreshToken }
+
+
+    } catch (error) {
+        throw new Error("Something went wrong while generating access and refresh tokens");
+    }
+}
 
 class authController {
 
@@ -69,6 +91,7 @@ class authController {
             } else {
 
                 if (existingUser.isVerified) {
+                    await new Promise(r => setTimeout(r, 800));
                     return res.status(200).json({ message: "If the account exists, an OTP has been sent." });
 
                 }
@@ -134,6 +157,9 @@ class authController {
                 const now = new Date();
 
                 if (now >= user.verifyCodeExpiry) {
+                    user.verifyCode = undefined;
+                    user.verifyCodeExpiry = undefined;
+                    await user.save({ validateBeforeSave: false });
                     return res.status(400).json({
                         message: "Invalid or expired OTP"
                     });
@@ -169,6 +195,64 @@ class authController {
         } catch (error) {
             console.error("Error verifying OTP: ", error);
             res.status(500).json({ message: "Error verifying OTP", error });
+        }
+    }
+
+    async login(req, res, next) {
+        try {
+            const {
+                email,
+                password,
+            } = req.body;
+
+            const trimmedEmail = email.toLowerCase().trim();
+            await loginSchema.validate({ email: trimmedEmail, password }, { abortEarly: false });
+
+            const existingUser = await User.findOne({ email: trimmedEmail });
+            if (!existingUser) {
+                console.error("User not found");
+                return res.status(404).json({ message: "User not found" });
+            }
+
+            if (!existingUser.isVerified) {
+                console.error("User is not verified");
+                return res.status(403).json({ message: "User is not verified" });
+            }
+
+
+            try {
+
+                const hashedPassword = existingUser.password;
+
+                const isPasswordCorrect = await comparePassword(password, hashedPassword);
+
+                if (!isPasswordCorrect) {
+                    console.error("Password is incorrect");
+                    return res.status(401).json({ message: "Password is incorrect" });
+                }
+
+                const { accessToken, refreshToken } = await generateAccessAndRefereshTokens(existingUser._id)
+
+                const loggedInUser = await User.findById(existingUser._id).select("-password -refreshToken")
+
+                const options = {
+                    httpOnly: true,
+                    secure: true
+                }
+
+                return res
+                    .status(200)
+                    .cookie("accessToken", accessToken, options)
+                    .cookie("refreshToken", refreshToken, options)
+                    .json({ message: "logged in successfully", user: loggedInUser });
+            } catch (error) {
+                console.error("Error is token generation: ", error);
+                return res.status(401).json({ message: "Error in generating token", error });
+            }
+
+        } catch (error) {
+            console.error("Error logging user in: ", error);
+            return res.status(500).json({ message: "Error logging in user", error });
         }
     }
 };

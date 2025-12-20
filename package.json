@@ -1,0 +1,25 @@
+{
+  "name": "smart-truck-loading-optimization-system",
+  "version": "1.0.0",
+  "description": "",
+  "homepage": "https://github.com/UjjawalGusain/Smart-Truck-Loading-Optimization-System#readme",
+  "bugs": {
+    "url": "https://github.com/UjjawalGusain/Smart-Truck-Loading-Optimization-System/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/UjjawalGusain/Smart-Truck-Loading-Optimization-System.git"
+  },
+  "license": "ISC",
+  "author": "",
+  "type": "commonjs",
+  "main": "index.js",
+  "scripts": {
+    "dev": "concurrently \"npm run dev --prefix frontend\" \"npm run dev --prefix backend\"",
+    "client": "npm run dev --prefix frontend",
+    "server": "npm run dev --prefix backend"
+  },
+  "dependencies": {
+    "concurrently": "^9.2.1"
+  }
+}

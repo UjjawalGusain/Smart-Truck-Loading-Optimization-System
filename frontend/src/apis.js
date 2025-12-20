@@ -19,9 +19,12 @@ export const privateApi = axios.create({
 
 
 const APIS = {
-    signup: `${BASE_URL}/api/auth/signup`, // protected
-    login: `${BASE_URL}/api/auth/login`, // protected
-    verifyOtp: `${BASE_URL}/api/auth/verify-otp`, // protected
+    signup: `${BASE_URL}/api/auth/signup`,
+    login: `${BASE_URL}/api/auth/login`,
+    verifyOtp: `${BASE_URL}/api/auth/verify-otp`,
+
+    getMe: `${BASE_URL}/api/user/me`, // protected
+
 }
 
 export default APIS;

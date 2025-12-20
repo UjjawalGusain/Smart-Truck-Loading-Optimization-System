@@ -1,9 +1,10 @@
 import Signup from "./components/Signup.jsx"
+import VerifyOtp from "./components/VerifyOtp.jsx"
 function App() {
 
     return (
         <>
-            <Signup />
+            <VerifyOtp email={"ujjawalgusain31@gmail.com"} />
         </>
     )
 }

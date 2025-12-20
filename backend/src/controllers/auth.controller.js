@@ -250,6 +250,7 @@ class authController {
                 return res.status(401).json({ message: "Error in generating token", error });
             }
 
+
         } catch (error) {
             console.error("Error logging user in: ", error);
             return res.status(500).json({ message: "Error logging in user", error });

@@ -5,6 +5,8 @@ import connectDB from "./db/connect.js";
 import cookieParser from "cookie-parser";
 
 import authRouter from "./routes/auth.route.js";
+import warehouseRouter from "./routes/warehouse.route.js";
+import truckDealerRouter from "./routes/truckDealer.route.js";
 
 
 const app = express();
@@ -24,6 +26,8 @@ try {
 
 
 app.use('/api/auth', authRouter);
+app.use('/api/warehouse', warehouseRouter);
+app.use('/api/truck-dealer', truckDealerRouter);
 const corsOptions = {
     origin: ['http://localhost:5173'],
 }

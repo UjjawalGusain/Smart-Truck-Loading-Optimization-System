@@ -5,7 +5,7 @@ const truckDealerSchema = new mongoose.Schema({
     companyName: { type: String, required: true },
     fleetSize: { type: Number },
     address: { type: String },
-    licenseNumber: { type: String },
+    licenseNumber: { type: String, required: true },
     operatingRegions: { type: [String] } // array of cities/regions
 }, { timestamps: true });
 

@@ -23,7 +23,41 @@ const shipmentSchema = object({
     hazardous: boolean().default(false),
     temperatureSensitive: boolean().default(false)
 });
+const getShipmentsSchema = object({
+    warehouseId: string().required("warehouseId is required"),
 
+    status: string()
+        .oneOf(["PENDING", "OPTIMIZED", "BOOKED", "IN-TRANSIT"]).transform((value, originalValue) =>
+            originalValue === "" ? null : value
+        )
+        .nullable(),
+
+    destination: string().transform((value, originalValue) =>
+        originalValue === "" ? null : value
+    )
+        .nullable(),
+
+    fromDate: date()
+        .transform((value, originalValue) =>
+            originalValue === "" ? null : value
+        )
+        .nullable(),
+
+    toDate: date()
+        .transform((value, originalValue) =>
+            originalValue === "" ? null : value
+        )
+        .nullable(),
+
+    page: number()
+        .integer()
+        .min(1),
+
+    limit: number()
+        .integer()
+        .min(1)
+        .max(100)
+});
 class ShipmentController {
     async createShipment(req, res) {
         const session = await mongoose.startSession();
@@ -104,6 +138,84 @@ class ShipmentController {
             return res.status(500).json({ message: "Error creating shipment" });
         }
     }
+
+
+
+    async getShipments(req, res) {
+        const {
+            warehouseId,
+            status,
+            destination,
+            fromDate,
+            toDate,
+            page = 1,
+            limit = 10
+        } = req.query;
+
+        if (!warehouseId) {
+            return res.status(400).json({ message: "warehouseId is required" });
+        }
+
+        try {
+
+            await getShipmentsSchema.validate({
+                warehouseId,
+                status,
+                destination,
+                fromDate,
+                toDate,
+                page,
+                limit
+            })
+
+            const pageNumber = Math.max(parseInt(page, 10), 1);
+            const limitNumber = Math.max(parseInt(limit, 10), 1);
+            const skip = (pageNumber - 1) * limitNumber;
+
+            const query = { warehouseId };
+
+            if (status) {
+                query.status = status;
+            }
+
+            if (destination) {
+                query.destination = { $regex: destination, $options: "i" };
+            }
+
+            if (fromDate || toDate) {
+                query.createdAt = {};
+                if (fromDate) query.createdAt.$gte = new Date(fromDate);
+                if (toDate) query.createdAt.$lte = new Date(toDate);
+            }
+
+            const [shipments, total] = await Promise.all([
+                Shipment.find(query)
+                    .sort({ updatedAt: -1 })
+                    .skip(skip)
+                    .limit(limitNumber),
+                Shipment.countDocuments(query)
+            ]);
+
+            return res.status(200).json({
+                shipments,
+                pagination: {
+                    page: pageNumber,
+                    limit: limitNumber,
+                    total,
+                    totalPages: Math.ceil(total / limitNumber)
+                },
+                filters: {
+                    status,
+                    destination,
+                    fromDate,
+                    toDate
+                }
+            });
+        } catch (error) {
+            return res.status(500).json({ message: "Error fetching shipments", error });
+        }
+    }
+
 }
 
 export default new ShipmentController();

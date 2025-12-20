@@ -2,11 +2,10 @@ import mongoose from "mongoose";
 import jwt from "jsonwebtoken"
 const userSchema = new mongoose.Schema({
     name: { type: String, required: true },
-    email: { type: String, required: true, unique: true, lowercase: true, trim: true },
+    email: { type: String, required: true, unique: true, lowercase: true, trim: true, index: true },
     phoneNumber: { type: String, required: true },
     userType: { type: String, enum: ["WAREHOUSE_USER", "TRUCK_DEALER"], required: true },
     password: { type: String, required: true },
-    accessToken: { type: String },
     refreshToken: { type: String },
     verifyCode: { type: String },
     verifyCodeExpiry: { type: Date },

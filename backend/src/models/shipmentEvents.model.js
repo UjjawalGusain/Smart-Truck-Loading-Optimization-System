@@ -4,7 +4,7 @@ const shipmentEventSchema = new mongoose.Schema({
     shipmentId: { type: mongoose.Schema.Types.ObjectId, ref: "Shipment", required: true },
     status: {
         type: String,
-        enum: ["PENDING", "OPTIMIZED", "BOOKED", "IN-TRANSIT"],
+        enum: ["PENDING", "OPTIMIZED", "BOOKED", "IN-TRANSIT", "DELIVERED"],
         required: true
     },
     location: { type: String, required: true },

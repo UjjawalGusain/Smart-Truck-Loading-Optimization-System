@@ -8,7 +8,7 @@ const DashboardHeader = ({ warehouse, onAddShipment }) => {
 
             <button
                 onClick={onAddShipment}
-                className="px-4 py-2 bg-black text-white rounded"
+                className="px-4 py-2 bg-black text-white rounded hover:cursor-pointer"
             >
                 Add Shipment
             </button>

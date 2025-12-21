@@ -96,7 +96,7 @@ const WarehouseDashboard = () => {
                     <p className="text-gray-500 mb-4">
                         Please create a warehouse to continue.
                     </p>
-                    <button className="px-4 py-2 bg-blue-600 text-white rounded">
+                    <button className="px-4 py-2 bg-blue-600 text-white rounded hover:cursor-pointer">
                         Add Warehouse
                     </button>
                 </div>
@@ -161,7 +161,7 @@ const WarehouseDashboard = () => {
                                             type="date"
                                             value={shipmentForm.deadline}
                                             onChange={e => setShipmentForm(f => ({ ...f, deadline: e.target.value }))}
-                                            className="w-full border rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-black"
+                                            className="w-full border rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-black hover:cursor-pointer"
                                         />
                                     </div>
                                 </div>
@@ -183,7 +183,7 @@ const WarehouseDashboard = () => {
                                                         [opt.key]: f[opt.key] ?? opt.default ? false : true
                                                     }))
                                                 }
-                                                className={`w-10 h-5 flex items-center rounded-full p-1 transition ${shipmentForm[opt.key] ?? opt.default ? "bg-black" : "bg-gray-300"
+                                                className={`w-10 h-5 flex items-center rounded-full p-1 hover:cursor-pointer transition ${shipmentForm[opt.key] ?? opt.default ? "bg-black" : "bg-gray-300"
                                                     }`}
                                             >
                                                 <div
@@ -200,13 +200,13 @@ const WarehouseDashboard = () => {
                                 <div className="flex justify-end gap-3 mt-8">
                                     <button
                                         onClick={() => setShowAddShipment(false)}
-                                        className="px-4 py-2 border rounded-lg text-sm"
+                                        className="px-4 py-2 border rounded-lg text-sm hover:cursor-pointer"
                                     >
                                         Cancel
                                     </button>
                                     <button
                                         onClick={handleAddShipment}
-                                        className="px-5 py-2 bg-black text-white rounded-lg text-sm hover:opacity-90"
+                                        className="px-5 py-2 bg-black text-white rounded-lg text-sm hover:opacity-90 hover:cursor-pointer"
                                     >
                                         Create Shipment
                                     </button>
@@ -222,6 +222,7 @@ const WarehouseDashboard = () => {
                     page={page}
                     setPage={setPage}
                     totalPages={totalPages}
+                    setShipments={setShipments}
                 />
             </main>
         </div>

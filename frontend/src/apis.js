@@ -26,8 +26,10 @@ const APIS = {
     getMe: `${BASE_URL}/api/user/me`, //protected
     getAllWarehouses: `${BASE_URL}/api/warehouse/get-warehouses`, //protected
 
-    createShipment: `${BASE_URL}/api/shipment/create`, //protected
+    createShipment: `${BASE_URL}/api/shipment`, //protected
     getShipments: `${BASE_URL}/api/shipment`, //protected
+    updateShipment: `${BASE_URL}/api/shipment`, //protected
+    deleteShipment: `${BASE_URL}/api/shipment`, //protected   /// /:shipmentId
 
 }
 

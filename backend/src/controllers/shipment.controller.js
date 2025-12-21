@@ -2,6 +2,7 @@ import mongoose from "mongoose";
 import Warehouse from "./../models/warehouse.model.js";
 import Shipment from "../models/shipment.model.js";
 import ShipmentEvent from "../models/shipmentEvents.model.js";
+import Truck from "../models/truck.model.js";
 import { object, string, number, date, boolean } from "yup";
 
 const shipmentSchema = object({
@@ -23,11 +24,19 @@ const shipmentSchema = object({
     hazardous: boolean().default(false),
     temperatureSensitive: boolean().default(false)
 });
+
+const shipmentStatusChangeAllowed = {
+    "PENDING": "OPTIMIZED",
+    "OPTIMIZED": "BOOKED",
+    "BOOKED": "IN-TRANSIT",
+    "IN-TRANSIT": "DELIVERED",
+}
+
 const getShipmentsSchema = object({
     warehouseId: string().required("warehouseId is required"),
 
     status: string()
-        .oneOf(["PENDING", "OPTIMIZED", "BOOKED", "IN-TRANSIT"]).transform((value, originalValue) =>
+        .oneOf(["PENDING", "OPTIMIZED", "BOOKED", "IN-TRANSIT", "DELIVERED"]).transform((value, originalValue) =>
             originalValue === "" ? null : value
         )
         .nullable(),
@@ -58,6 +67,38 @@ const getShipmentsSchema = object({
         .min(1)
         .max(100)
 });
+
+const updateShipmentSchema = object({
+    shipmentId: string()
+        .required("shipmentId is required")
+        .test(
+            "is-objectid",
+            "Invalid shipmentId",
+            value => mongoose.Types.ObjectId.isValid(value)
+        ),
+
+    changeStatus: boolean()
+        .default(false),
+
+    truckId: string()
+        .nullable()
+        .transform((value, originalValue) =>
+            originalValue === "" ? null : value
+        )
+        .test(
+            "is-objectid",
+            "Invalid truckId",
+            value => value == null || mongoose.Types.ObjectId.isValid(value)
+        ),
+
+    deadline: date()
+        .nullable()
+        .transform((value, originalValue) =>
+            originalValue === "" ? null : value
+        )
+        .typeError("Invalid deadline")
+});
+
 class ShipmentController {
     async createShipment(req, res) {
         const session = await mongoose.startSession();
@@ -183,9 +224,9 @@ class ShipmentController {
             }
 
             if (fromDate || toDate) {
-                query.createdAt = {};
-                if (fromDate) query.createdAt.$gte = new Date(fromDate);
-                if (toDate) query.createdAt.$lte = new Date(toDate);
+                query.deadline = {};
+                if (fromDate) query.deadline.$gte = new Date(fromDate);
+                if (toDate) query.deadline.$lte = new Date(toDate);
             }
 
             const [shipments, total] = await Promise.all([
@@ -215,6 +256,140 @@ class ShipmentController {
             return res.status(500).json({ message: "Error fetching shipments", error });
         }
     }
+
+
+    async updateShipment(req, res) {
+        const session = await mongoose.startSession();
+        session.startTransaction();
+
+        try {
+            const { shipmentId, changeStatus, truckId, deadline } = req.body;
+
+            await updateShipmentSchema.validate({
+                shipmentId,
+                changeStatus,
+                truckId,
+                deadline,
+            })
+
+            const shipment = await Shipment.findById(shipmentId).session(session);
+            if (!shipment) {
+                await session.abortTransaction();
+                session.endSession();
+                return res.status(404).json({ message: "Shipment not found" });
+            }
+
+            if (shipment.status === "DELIVERED") {
+                await session.abortTransaction();
+                session.endSession();
+                return res.status(400).json({ message: "Delivered shipment cannot be updated" });
+            }
+
+            if (deadline) {
+                shipment.deadline = deadline;
+            }
+
+            if (changeStatus) {
+                const nextStatus = shipmentStatusChangeAllowed[shipment.status];
+                if (!nextStatus) {
+                    await session.abortTransaction();
+                    session.endSession();
+                    return res.status(400).json({ message: "Invalid status transition" });
+                }
+
+                if (nextStatus === "BOOKED") {
+                    if (!truckId) {
+                        await session.abortTransaction();
+                        session.endSession();
+                        return res.status(400).json({ message: "truckId required to book shipment" });
+                    }
+
+                    const truck = await Truck.findById(truckId).session(session);
+                    if (!truck) {
+                        await session.abortTransaction();
+                        session.endSession();
+                        return res.status(404).json({ message: "Truck not found" });
+                    }
+
+                    shipment.assignedTruckId = truckId;
+                }
+
+                shipment.status = nextStatus;
+
+                await ShipmentEvent.create([{
+                    shipmentId: shipment._id,
+                    status: shipment.status,
+                    location: shipment.status === "IN-TRANSIT" ? "ON_ROUTE" : shipment.origin,
+                    timestamp: new Date()
+                }], { session });
+            }
+
+            await shipment.save({ session });
+            await session.commitTransaction();
+            session.endSession();
+
+            return res.status(200).json({
+                message: "Shipment updated successfully",
+                shipment
+            });
+
+        } catch (error) {
+            await session.abortTransaction();
+            session.endSession();
+            return res.status(500).json({ message: "Error updating shipment" });
+        }
+    }
+
+
+    async deleteShipment(req, res) {
+        const { shipmentId } = req.params;
+
+        if (!mongoose.Types.ObjectId.isValid(shipmentId)) {
+            return res.status(400).json({ message: "Invalid shipmentId" });
+        }
+
+        const session = await mongoose.startSession();
+        session.startTransaction();
+
+        try {
+            const shipment = await Shipment.findById(shipmentId).session(session);
+
+            if (!shipment) {
+                await session.abortTransaction();
+                session.endSession();
+                return res.status(404).json({ message: "Shipment not found" });
+            }
+
+            if (["IN-TRANSIT", "DELIVERED"].includes(shipment.status)) {
+                await session.abortTransaction();
+                session.endSession();
+                return res.status(400).json({
+                    message: "Shipment cannot be deleted in its current state"
+                });
+            }
+
+            await ShipmentEvent.deleteMany(
+                { shipmentId },
+                { session }
+            );
+
+            await Shipment.deleteOne(
+                { _id: shipmentId },
+                { session }
+            );
+
+            await session.commitTransaction();
+            session.endSession();
+
+            return res.status(200).json({ message: "Shipment deleted successfully" });
+
+        } catch {
+            await session.abortTransaction();
+            session.endSession();
+            return res.status(500).json({ message: "Error deleting shipment" });
+        }
+    }
+
 
 }
 

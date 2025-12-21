@@ -18,7 +18,7 @@ const shipmentSchema = new mongoose.Schema({
 
     status: {
         type: String,
-        enum: ["PENDING", "OPTIMIZED", "BOOKED", "IN-TRANSIT"],
+        enum: ["PENDING", "OPTIMIZED", "BOOKED", "IN-TRANSIT", "DELIVERED"],
         default: "PENDING"
     }
 }, { timestamps: true });

@@ -23,13 +23,24 @@ const APIS = {
     login: `${BASE_URL}/api/auth/login`,
     verifyOtp: `${BASE_URL}/api/auth/verify-otp`,
 
+    logout: `${BASE_URL}/api/auth/logout`, //protected
+
     getMe: `${BASE_URL}/api/user/me`, //protected
     getAllWarehouses: `${BASE_URL}/api/warehouse/get-warehouses`, //protected
+
+    createWarehouse: `${BASE_URL}/api/warehouse/create`, //protected
 
     createShipment: `${BASE_URL}/api/shipment`, //protected
     getShipments: `${BASE_URL}/api/shipment`, //protected
     updateShipment: `${BASE_URL}/api/shipment`, //protected
     deleteShipment: `${BASE_URL}/api/shipment`, //protected   /// /:shipmentId
+
+    signAsTruckDealer: `${BASE_URL}/api/truck-dealer/sign`, //protected
+    getTruckDealer: `${BASE_URL}/api/truck-dealer`, //protected
+    getTruckDealerDashboardKPI: `${BASE_URL}/api/truck-dealer/dashboard-kpi`, //protected
+
+    createTrucks: `${BASE_URL}/api/truck/create-many`, //protected
+
 
 }
 

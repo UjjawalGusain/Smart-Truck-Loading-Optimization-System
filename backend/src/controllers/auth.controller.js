@@ -52,7 +52,6 @@ class authController {
 
     async signup(req, res, next) {
         try {
-            console.log(req.body);
             const {
                 name,
                 phoneNumber,
@@ -68,7 +67,6 @@ class authController {
             const hashedPassword = await hashPassword(password);
 
             const existingUser = await User.findOne({ email });
-            console.log("existingUser: ", existingUser);
             const newOtp = getOtp();
             const hashedOtp = await hashOtp(newOtp);
             const now = new Date();
@@ -82,7 +80,6 @@ class authController {
                         verifyCode: hashedOtp, verifyCodeExpiry: fifteenMinutesLater
                     }
                     const user = await User.create(userBody);
-                    console.log("New user created: ", user);
 
                 } catch (error) {
                     console.error("Error creating user: ", error);
@@ -235,15 +232,10 @@ class authController {
 
                 const loggedInUser = await User.findById(existingUser._id).select("-password -refreshToken")
 
-                const isProd = process.env.STAGE === "PRODUCTION";
-
                 const options = {
                     httpOnly: true,
-                    secure: isProd,
-                    sameSite: isProd ? "none" : "lax",
-                    path: "/",
-                    maxAge: 7 * 24 * 60 * 60 * 1000,
-                };
+                    secure: true
+                }
 
                 return res
                     .status(200)
@@ -260,6 +252,20 @@ class authController {
             console.error("Error logging user in: ", error);
             return res.status(500).json({ message: "Error logging in user", error });
         }
+    }
+
+    async logout(req, res) {
+
+        const options = {
+            httpOnly: true,
+            secure: true,
+        };
+
+        return res
+            .status(200)
+            .clearCookie("accessToken", options)
+            .clearCookie("refreshToken", options)
+            .json({ message: "logged out successfully" });
     }
 };
 

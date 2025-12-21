@@ -5,5 +5,7 @@ import verifyJWT from "../middlewares/verifyJwt.js";
 const truckDealerRouter = Router();
 
 truckDealerRouter.post('/sign', verifyJWT, truckDealerController.signAsTruckDealer);
+truckDealerRouter.get('/', verifyJWT, truckDealerController.getTruckDealer);
+truckDealerRouter.get('/dashboard-kpi', verifyJWT, truckDealerController.dashboardKpi);
 
 export default truckDealerRouter;

@@ -3,11 +3,15 @@ import { useUser } from "../hooks/useUser.js";
 import APIS, { privateApi } from "../apis.js";
 import DashboardHeader from "./WarehouseUserDashboard/DashboardHeader.jsx";
 import ShipmentsSection from "./WarehouseUserDashboard/ShipmentsSections.jsx";
+import AddWarehouse from "./WarehouseUserDashboard/AddWarehouse.jsx";
 
 const WarehouseDashboard = () => {
     const { loading } = useUser();
+
     const [warehouse, setWarehouse] = useState(null);
+    const [showAddWarehouse, setShowAddWarehouse] = useState(false);
     const [showAddShipment, setShowAddShipment] = useState(false);
+
     const [shipments, setShipments] = useState([]);
     const [page, setPage] = useState(1);
     const [totalPages, setTotalPages] = useState(1);
@@ -26,6 +30,54 @@ const WarehouseDashboard = () => {
         destination: "",
         deadline: ""
     });
+
+    const handleFetchWarehouses = async () => {
+        const res = await privateApi.get(APIS.getAllWarehouses);
+        setWarehouse(res.data.warehouses?.[0] || null);
+    };
+
+    useEffect(() => {
+        if (loading) return;
+
+        let cancelled = false;
+
+        const fetchWarehouses = async () => {
+            try {
+                const res = await privateApi.get(APIS.getAllWarehouses);
+                if (!cancelled) {
+                    setWarehouse(res.data.warehouses?.[0] || null);
+                }
+            } catch (err) {
+                if (!cancelled) setWarehouse(null);
+            }
+        };
+
+        fetchWarehouses();
+
+        return () => {
+            cancelled = true;
+        };
+    }, [loading]);
+
+    useEffect(() => {
+        if (!warehouse) return;
+
+        const fetchShipments = async () => {
+            const res = await privateApi.get(APIS.getShipments, {
+                params: {
+                    warehouseId: warehouse._id,
+                    page,
+                    limit: 10,
+                    ...filters
+                }
+            });
+
+            setShipments(res.data.shipments);
+            setTotalPages(res.data.pagination.totalPages);
+        };
+
+        fetchShipments();
+    }, [warehouse, page, filters]);
 
     const handleAddShipment = async () => {
         const payload = {
@@ -50,36 +102,6 @@ const WarehouseDashboard = () => {
         setPage(1);
     };
 
-    useEffect(() => {
-        if (!loading) {
-            const fetchWarehouses = async () => {
-                const res = await privateApi.get(APIS.getAllWarehouses);
-                setWarehouse(res.data.warehouses?.[0] || null);
-            };
-            fetchWarehouses();
-        }
-    }, [loading]);
-
-    useEffect(() => {
-        if (!warehouse) return;
-
-        const fetchShipments = async () => {
-            const res = await privateApi.get(APIS.getShipments, {
-                params: {
-                    warehouseId: warehouse._id,
-                    page,
-                    limit: 10,
-                    ...filters
-                }
-            });
-
-            setShipments(res.data.shipments);
-            setTotalPages(res.data.pagination.totalPages);
-        };
-
-        fetchShipments();
-    }, [warehouse, page, filters]);
-
     if (loading) {
         return (
             <div className="h-screen flex items-center justify-center text-gray-500">
@@ -96,10 +118,20 @@ const WarehouseDashboard = () => {
                     <p className="text-gray-500 mb-4">
                         Please create a warehouse to continue.
                     </p>
-                    <button className="px-4 py-2 bg-blue-600 text-white rounded hover:cursor-pointer">
+                    <button
+                        onClick={() => setShowAddWarehouse(true)}
+                        className="px-4 py-2 bg-black text-white rounded"
+                    >
                         Add Warehouse
                     </button>
                 </div>
+
+                {showAddWarehouse && (
+                    <AddWarehouse
+                        onClose={() => setShowAddWarehouse(false)}
+                        onSuccess={handleFetchWarehouses}
+                    />
+                )}
             </div>
         );
     }
@@ -108,12 +140,10 @@ const WarehouseDashboard = () => {
         <div className="min-h-screen bg-gray-50">
             <DashboardHeader
                 warehouse={warehouse}
-                onAddShipment={() => setShowAddShipment(p => !p)}
+                onAddShipment={() => setShowAddShipment(true)}
             />
 
             <main className="p-8 space-y-6">
-
-
                 {showAddShipment && (
                     <>
                         <div className="fixed inset-0 z-40 bg-black/40 backdrop-blur-sm" />
@@ -128,85 +158,73 @@ const WarehouseDashboard = () => {
                                         type="number"
                                         placeholder="Weight (tons)"
                                         value={shipmentForm.weightTons}
-                                        onChange={e => setShipmentForm(f => ({ ...f, weightTons: e.target.value }))}
-                                        className="border rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-black"
+                                        onChange={e =>
+                                            setShipmentForm(f => ({
+                                                ...f,
+                                                weightTons: e.target.value
+                                            }))
+                                        }
+                                        className="border rounded-lg px-3 py-2"
                                     />
                                     <input
                                         type="number"
                                         placeholder="Volume (m³)"
                                         value={shipmentForm.volumeM3}
-                                        onChange={e => setShipmentForm(f => ({ ...f, volumeM3: e.target.value }))}
-                                        className="border rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-black"
+                                        onChange={e =>
+                                            setShipmentForm(f => ({
+                                                ...f,
+                                                volumeM3: e.target.value
+                                            }))
+                                        }
+                                        className="border rounded-lg px-3 py-2"
                                     />
                                     <input
                                         type="number"
                                         placeholder="Number of boxes"
                                         value={shipmentForm.numBoxes}
-                                        onChange={e => setShipmentForm(f => ({ ...f, numBoxes: e.target.value }))}
-                                        className="col-span-2 border rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-black"
+                                        onChange={e =>
+                                            setShipmentForm(f => ({
+                                                ...f,
+                                                numBoxes: e.target.value
+                                            }))
+                                        }
+                                        className="col-span-2 border rounded-lg px-3 py-2"
                                     />
                                     <input
                                         type="text"
                                         placeholder="Destination"
                                         value={shipmentForm.destination}
-                                        onChange={e => setShipmentForm(f => ({ ...f, destination: e.target.value }))}
-                                        className="col-span-2 border rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-black"
+                                        onChange={e =>
+                                            setShipmentForm(f => ({
+                                                ...f,
+                                                destination: e.target.value
+                                            }))
+                                        }
+                                        className="col-span-2 border rounded-lg px-3 py-2"
                                     />
-
-                                    <div className="col-span-2">
-                                        <label className="block text-sm font-medium text-gray-600 mb-1">
-                                            Deadline
-                                        </label>
-                                        <input
-                                            type="date"
-                                            value={shipmentForm.deadline}
-                                            onChange={e => setShipmentForm(f => ({ ...f, deadline: e.target.value }))}
-                                            className="w-full border rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-black hover:cursor-pointer"
-                                        />
-                                    </div>
-                                </div>
-
-                                <div className="grid grid-cols-2 gap-4 mt-6">
-                                    {[
-                                        { key: "splittable", label: "Splittable", default: true },
-                                        { key: "stackable", label: "Stackable", default: true },
-                                        { key: "hazardous", label: "Hazardous", default: false },
-                                        { key: "temperatureSensitive", label: "Temperature Sensitive", default: false }
-                                    ].map(opt => (
-                                        <div key={opt.key} className="flex items-center justify-between border rounded-lg px-4 py-3">
-                                            <span className="text-sm font-medium">{opt.label}</span>
-                                            <button
-                                                type="button"
-                                                onClick={() =>
-                                                    setShipmentForm(f => ({
-                                                        ...f,
-                                                        [opt.key]: f[opt.key] ?? opt.default ? false : true
-                                                    }))
-                                                }
-                                                className={`w-10 h-5 flex items-center rounded-full p-1 hover:cursor-pointer transition ${shipmentForm[opt.key] ?? opt.default ? "bg-black" : "bg-gray-300"
-                                                    }`}
-                                            >
-                                                <div
-                                                    className={`w-4 h-4 bg-white rounded-full shadow transform transition ${shipmentForm[opt.key] ?? opt.default
-                                                        ? "translate-x-5"
-                                                        : "translate-x-0"
-                                                        }`}
-                                                />
-                                            </button>
-                                        </div>
-                                    ))}
+                                    <input
+                                        type="date"
+                                        value={shipmentForm.deadline}
+                                        onChange={e =>
+                                            setShipmentForm(f => ({
+                                                ...f,
+                                                deadline: e.target.value
+                                            }))
+                                        }
+                                        className="col-span-2 border rounded-lg px-3 py-2"
+                                    />
                                 </div>
 
                                 <div className="flex justify-end gap-3 mt-8">
                                     <button
                                         onClick={() => setShowAddShipment(false)}
-                                        className="px-4 py-2 border rounded-lg text-sm hover:cursor-pointer"
+                                        className="px-4 py-2 border rounded-lg hover:cursor-pointer"
                                     >
                                         Cancel
                                     </button>
                                     <button
                                         onClick={handleAddShipment}
-                                        className="px-5 py-2 bg-black text-white rounded-lg text-sm hover:opacity-90 hover:cursor-pointer"
+                                        className="px-5 py-2 bg-black text-white rounded-lg hover:cursor-pointer"
                                     >
                                         Create Shipment
                                     </button>
@@ -215,6 +233,7 @@ const WarehouseDashboard = () => {
                         </div>
                     </>
                 )}
+
                 <ShipmentsSection
                     shipments={shipments}
                     filters={filters}

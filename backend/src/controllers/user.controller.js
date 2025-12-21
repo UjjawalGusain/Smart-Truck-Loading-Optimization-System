@@ -3,10 +3,7 @@ class UserController {
 
     async getMe(req, res) {
         try {
-            console.log("Cookies: ")
-            console.log(req.cookies);
             const user = req.user;
-            console.log(user);
             if (!user) {
                 return res.status(404).json({ message: "User not found" });
             }

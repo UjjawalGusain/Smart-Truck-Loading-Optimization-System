@@ -9,6 +9,7 @@ import warehouseRouter from "./routes/warehouse.route.js";
 import truckDealerRouter from "./routes/truckDealer.route.js";
 import userRouter from "./routes/user.route.js";
 import shipmentRouter from "./routes/shipment.route.js";
+import truckRouter from "./routes/truck.route.js";
 
 const app = express();
 const PORT = process.env.PORT;
@@ -40,6 +41,7 @@ app.use('/api/warehouse', warehouseRouter);
 app.use('/api/truck-dealer', truckDealerRouter);
 app.use('/api/user', userRouter);
 app.use('/api/shipment', shipmentRouter);
+app.use('/api/truck', truckRouter);
 
 
 app.listen(PORT, () => {

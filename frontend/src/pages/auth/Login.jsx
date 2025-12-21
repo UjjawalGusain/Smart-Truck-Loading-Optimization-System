@@ -1,17 +1,18 @@
 import { useState } from "react";
 import { useUser } from "../../hooks/useUser.js"
 import APIS, { publicApi } from "../../apis.js";
-import { useNavigate } from "react-router-dom";
+import { Navigate, useNavigate } from "react-router-dom";
 import axios from "axios";
 const Login = () => {
 
-    const { setUser } = useUser();
+    const { user, setUser, loading } = useUser();
     const navigate = useNavigate();
     const [form, setForm] = useState({
         email: "",
         password: ""
     });
-
+    if (loading) return <div>Loading...</div>;      // 🔹 ADD
+    if (user) return <Navigate to="/" replace />;
     const handleChange = (e) => {
         setForm(prev => ({
             ...prev,
@@ -31,7 +32,6 @@ const Login = () => {
             });
 
             console.log("Login successful");
-            console.log(res);
 
             setUser(res.data.user);
             navigate("/dashboard");

@@ -38,8 +38,11 @@ const APIS = {
     signAsTruckDealer: `${BASE_URL}/api/truck-dealer/sign`, //protected
     getTruckDealer: `${BASE_URL}/api/truck-dealer`, //protected
     getTruckDealerDashboardKPI: `${BASE_URL}/api/truck-dealer/dashboard-kpi`, //protected
+    getTrucks: `${BASE_URL}/api/truck-dealer`, //protected //:truckDealerId
 
     createTrucks: `${BASE_URL}/api/truck/create-many`, //protected
+    deleteTruck: `${BASE_URL}/api/truck`, //protected
+    updateTruck: `${BASE_URL}/api/truck`, //protected
 
 
 }

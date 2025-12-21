@@ -158,6 +158,41 @@ class TruckDealerController {
         }
     }
 
+    async getTrucks(req, res) {
+
+        const { truckDealerId } = req.params;
+        const { primaryType, status, page = 1, limit = 10 } = req.query;
+
+        if (!truckDealerId) {
+            return res.status(400).json({ message: "truckDealerId is required" });
+        }
+
+        const filter = { truckDealerId };
+
+        if (primaryType && primaryType !== "all") filter.primaryType = primaryType;
+        if (status && status !== "all") filter.status = status;
+
+        const skip = (Number(page) - 1) * Number(limit);
+
+        try {
+            const [trucks, totalCount] = await Promise.all([
+                Truck.find(filter).skip(skip).limit(Number(limit)),
+                Truck.countDocuments(filter)
+            ]);
+
+            res.json({
+                trucks,
+                totalCount,
+                totalPages: Math.ceil(totalCount / Number(limit)),
+                currentPage: Number(page)
+            });
+        } catch (err) {
+            res.status(500).json({ message: "Failed to fetch trucks", error: err.message });
+        }
+
+    }
+
+
 }
 
 export default new TruckDealerController();

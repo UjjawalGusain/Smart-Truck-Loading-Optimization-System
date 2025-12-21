@@ -3,8 +3,9 @@ import { useState, useEffect } from "react";
 import APIS, { privateApi } from "../apis.js";
 import TruckDealerDetailsFill from "./TruckDealerDashboard/TruckDealerDetailsFill.jsx";
 import DashboardHeader from "./TruckDealerDashboard/DashboardHeader.jsx";
-import AddTrucks from "./TruckDealerDashboard/AddTrucks.jsx"
-
+import AddTrucks from "./TruckDealerDashboard/AddTrucks.jsx";
+import DashboardKpi from "./TruckDealerDashboard/DashboardKPI.jsx";
+import TruckSection from "./TruckDealerDashboard/TruckSection.jsx";
 
 const TruckDealerDashboard = () => {
     const { loading } = useUser();
@@ -13,9 +14,36 @@ const TruckDealerDashboard = () => {
     const [showSignTruckDealer, setShowSignTruckDealer] = useState(false);
     const [showAddTrucks, setShowAddTrucks] = useState(false);
 
+    const [trucks, setTrucks] = useState([]);
+    const [page, setPage] = useState(1);
+    const [totalPages, setTotalPages] = useState(1);
+    const [filters, setFilters] = useState({
+        primaryType: "",
+        status: ""
+    });
+
     const handleFetchTruckDealer = async () => {
         const res = await privateApi.get(APIS.getTruckDealer);
         setTruckDealer(res.data.truckDealer || null);
+    };
+
+    const fetchTrucks = async () => {
+        if (!truckDealer?._id) return;
+
+        const res = await privateApi.get(
+            `${APIS.getTrucks}/${truckDealer._id}`,
+            {
+                params: {
+                    page,
+                    limit: 10,
+                    primaryType: filters.primaryType || undefined,
+                    status: filters.status || undefined
+                }
+            }
+        );
+
+        setTrucks(res.data.trucks);
+        setTotalPages(res.data.totalPages);
     };
 
     useEffect(() => {
@@ -36,8 +64,14 @@ const TruckDealerDashboard = () => {
 
         fetchDealer();
 
-        return () => { cancelled = true };
+        return () => {
+            cancelled = true;
+        };
     }, [loading]);
+
+    useEffect(() => {
+        fetchTrucks();
+    }, [truckDealer, page, filters]);
 
     if (!truckDealer) {
         return (
@@ -75,11 +109,27 @@ const TruckDealerDashboard = () => {
             />
 
             {showAddTrucks && (
-                <AddTrucks onClose={() => setShowAddTrucks(false)} />
+                <AddTrucks
+                    onClose={() => setShowAddTrucks(false)}
+                    onSuccess={fetchTrucks}
+                />
             )}
+
+            <div className="px-6 py-6 space-y-6">
+                <DashboardKpi />
+
+                <TruckSection
+                    trucks={trucks}
+                    setTrucks={setTrucks}
+                    filters={filters}
+                    setFilters={setFilters}
+                    page={page}
+                    setPage={setPage}
+                    totalPages={totalPages}
+                />
+            </div>
         </div>
     );
 };
-
 
 export default TruckDealerDashboard;

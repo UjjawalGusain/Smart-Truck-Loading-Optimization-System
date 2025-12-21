@@ -5,5 +5,7 @@ import { Router } from "express";
 const truckRouter = Router();
 
 truckRouter.post('/create-many', verifyJWT, truckController.createTrucks);
+truckRouter.delete('/', verifyJWT, truckController.deleteTruck);
+truckRouter.patch('/', verifyJWT, truckController.updateTruck);
 
 export default truckRouter;

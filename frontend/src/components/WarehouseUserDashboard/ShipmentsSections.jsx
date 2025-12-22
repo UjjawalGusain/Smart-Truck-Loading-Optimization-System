@@ -114,75 +114,79 @@ const ShipmentsSection = ({
                 </button>
             </div>
 
-            <div className="bg-white rounded-lg shadow overflow-hidden">
-                <table className="w-full text-left">
-                    <thead className="bg-gray-100 text-sm text-gray-600">
-                        <tr>
-                            <th className="px-4 py-3">Serial No.</th>
-                            <th className="px-4 py-3">Destination</th>
-                            <th className="px-4 py-3">Weight</th>
-                            <th className="px-4 py-3">Volume</th>
-                            <th className="px-4 py-3">Boxes</th>
-                            <th className="px-4 py-3">Status</th>
-                            <th className="px-4 py-3">Deadline</th>
-                            <th className="px-4 py-3">Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {shipments.map((s, idx) => (
-                            <tr key={s._id} className="border-t hover:bg-gray-50">
-                                <td className="px-4 py-3">
-                                    {(page - 1) * limit + idx + 1}
-                                </td>
-                                <td className="px-4 py-3">{s.destination}</td>
-                                <td className="px-4 py-3">{s.weightTons}</td>
-                                <td className="px-4 py-3">{s.volumeM3}</td>
-                                <td className="px-4 py-3">{s.numBoxes}</td>
-                                <td className="px-4 py-3">
-                                    <span className="px-2 py-1 text-xs rounded-full bg-gray-100">
-                                        {s.status}
-                                    </span>
-                                </td>
-                                <td className="px-4 py-3">
-                                    {new Date(s.deadline).toLocaleDateString()}
-                                </td>
-                                <td className="px-4 py-3">
-                                    <div className="flex gap-2">
-                                        <button
-                                            onClick={() => {
-                                                setActiveShipmentId(s._id);
-                                                setShowDelete(true);
-                                            }}
-                                            className="p-2 rounded-lg bg-red-50 text-red-600 hover:bg-red-100"
-                                        >
-                                            <MdDeleteOutline className="size-5" />
-                                        </button>
 
-                                        <button
-                                            onClick={() => {
-                                                setActiveShipmentId(s._id);
-                                                setShowUpdate(true);
-                                            }}
-                                            className="p-2 rounded-lg bg-blue-50 text-blue-600 hover:bg-blue-100"
-                                        >
-                                            <CgPlayTrackNextR className="size-5" />
-                                        </button>
+            <div className="bg-white rounded-lg shadow">
+                <div className="overflow-x-auto">
+                    <table className="w-full min-w-[1000px] text-left">
 
-                                        <button
-                                            onClick={() => {
-                                                setActiveShipmentId(s._id);
-                                                setShowCalculator(true);
-                                            }}
-                                            className="p-2 rounded-lg bg-yellow-50 text-yellow-600 hover:bg-yellow-100"
-                                        >
-                                            <FaCalculator />
-                                        </button>
-                                    </div>
-                                </td>
+                        <thead className="bg-gray-100 text-sm text-gray-600">
+                            <tr>
+                                <th className="px-4 py-3">Serial No.</th>
+                                <th className="px-4 py-3">Destination</th>
+                                <th className="px-4 py-3">Weight</th>
+                                <th className="px-4 py-3">Volume</th>
+                                <th className="px-4 py-3">Boxes</th>
+                                <th className="px-4 py-3">Status</th>
+                                <th className="px-4 py-3">Deadline</th>
+                                <th className="px-4 py-3">Actions</th>
                             </tr>
-                        ))}
-                    </tbody>
-                </table>
+                        </thead>
+                        <tbody>
+                            {shipments.map((s, idx) => (
+                                <tr key={s._id} className="border-t hover:bg-gray-50">
+                                    <td className="px-4 py-3">
+                                        {(page - 1) * limit + idx + 1}
+                                    </td>
+                                    <td className="px-4 py-3">{s.destination}</td>
+                                    <td className="px-4 py-3">{s.weightTons}</td>
+                                    <td className="px-4 py-3">{s.volumeM3}</td>
+                                    <td className="px-4 py-3">{s.numBoxes}</td>
+                                    <td className="px-4 py-3">
+                                        <span className="px-2 py-1 text-xs rounded-full bg-gray-100">
+                                            {s.status}
+                                        </span>
+                                    </td>
+                                    <td className="px-4 py-3">
+                                        {new Date(s.deadline).toLocaleDateString()}
+                                    </td>
+                                    <td className="px-4 py-3">
+                                        <div className="flex gap-2">
+                                            <button
+                                                onClick={() => {
+                                                    setActiveShipmentId(s._id);
+                                                    setShowDelete(true);
+                                                }}
+                                                className="p-2 rounded-lg bg-red-50 text-red-600 hover:bg-red-100"
+                                            >
+                                                <MdDeleteOutline className="size-5" />
+                                            </button>
+
+                                            <button
+                                                onClick={() => {
+                                                    setActiveShipmentId(s._id);
+                                                    setShowUpdate(true);
+                                                }}
+                                                className="p-2 rounded-lg bg-blue-50 text-blue-600 hover:bg-blue-100"
+                                            >
+                                                <CgPlayTrackNextR className="size-5" />
+                                            </button>
+
+                                            <button
+                                                onClick={() => {
+                                                    setActiveShipmentId(s._id);
+                                                    setShowCalculator(true);
+                                                }}
+                                                className="p-2 rounded-lg bg-yellow-50 text-yellow-600 hover:bg-yellow-100"
+                                            >
+                                                <FaCalculator />
+                                            </button>
+                                        </div>
+                                    </td>
+                                </tr>
+                            ))}
+                        </tbody>
+                    </table>
+                </div>
 
                 <div className="flex justify-between items-center px-4 py-3 border-t">
                     <button

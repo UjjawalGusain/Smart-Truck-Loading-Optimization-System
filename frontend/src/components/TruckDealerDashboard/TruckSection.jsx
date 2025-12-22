@@ -76,55 +76,59 @@ const TruckSection = ({
                 </button>
             </div>
 
-            <div className="bg-white rounded-lg shadow overflow-hidden">
-                <table className="w-full text-left">
-                    <thead className="bg-gray-100 text-sm text-gray-600">
-                        <tr>
-                            <th className="px-4 py-3">Model Code</th>
-                            <th className="px-4 py-3">VIN</th>
-                            <th className="px-4 py-3">Type</th>
-                            <th className="px-4 py-3">Capacity</th>
-                            <th className="px-4 py-3">Status</th>
 
-                            <th className="px-4 py-3">Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {trucks.map(tr => (
-                            <tr key={tr._id} className="border-t hover:bg-gray-50">
-                                <td className="px-4 py-3">{tr.modelCode}</td>
-                                <td className="px-4 py-3">{tr.vin}</td>
-                                <td className="px-4 py-3">{tr.primaryType}</td>
-                                <td className="px-4 py-3">
-                                    {tr.maxWeightTons} T / {tr.maxVolumeM3} m³
-                                </td>
-                                <td className="px-4 py-3">
-                                    <span className="px-2 py-1 text-xs rounded-full bg-gray-100">
-                                        {tr.status}
-                                    </span>
-                                </td>
+            <div className="bg-white rounded-lg shadow">
+                <div className="overflow-x-auto">
+                    <table className="w-full min-w-[900px] text-left">
 
-                                <td className="px-4 py-3">
-                                    <div className="flex gap-2">
-                                        <button
-                                            onClick={() => setSelectedTruck(tr)}
-                                            className="p-2 rounded-lg bg-yellow-50 text-yellow-600 hover:bg-yellow-100 transition hover:cursor-pointer"
-                                        >
-                                            <MdBuild className="size-5" />
-                                        </button>
+                        <thead className="bg-gray-100 text-sm text-gray-600">
+                            <tr>
+                                <th className="px-4 py-3">Model Code</th>
+                                <th className="px-4 py-3">VIN</th>
+                                <th className="px-4 py-3">Type</th>
+                                <th className="px-4 py-3">Capacity</th>
+                                <th className="px-4 py-3">Status</th>
 
-                                        <button
-                                            onClick={() => handleDeleteTruck(tr._id)}
-                                            className="p-2 rounded-lg bg-red-50 text-red-600 hover:bg-red-100 transition hover:cursor-pointer"
-                                        >
-                                            <MdDeleteOutline className="size-5" />
-                                        </button>
-                                    </div>
-                                </td>
+                                <th className="px-4 py-3">Actions</th>
                             </tr>
-                        ))}
-                    </tbody>
-                </table>
+                        </thead>
+                        <tbody>
+                            {trucks.map(tr => (
+                                <tr key={tr._id} className="border-t hover:bg-gray-50">
+                                    <td className="px-4 py-3">{tr.modelCode}</td>
+                                    <td className="px-4 py-3">{tr.vin}</td>
+                                    <td className="px-4 py-3">{tr.primaryType}</td>
+                                    <td className="px-4 py-3">
+                                        {tr.maxWeightTons} T / {tr.maxVolumeM3} m³
+                                    </td>
+                                    <td className="px-4 py-3">
+                                        <span className="px-2 py-1 text-xs rounded-full bg-gray-100">
+                                            {tr.status}
+                                        </span>
+                                    </td>
+
+                                    <td className="px-4 py-3">
+                                        <div className="flex gap-2">
+                                            <button
+                                                onClick={() => setSelectedTruck(tr)}
+                                                className="p-2 rounded-lg bg-yellow-50 text-yellow-600 hover:bg-yellow-100 transition hover:cursor-pointer"
+                                            >
+                                                <MdBuild className="size-5" />
+                                            </button>
+
+                                            <button
+                                                onClick={() => handleDeleteTruck(tr._id)}
+                                                className="p-2 rounded-lg bg-red-50 text-red-600 hover:bg-red-100 transition hover:cursor-pointer"
+                                            >
+                                                <MdDeleteOutline className="size-5" />
+                                            </button>
+                                        </div>
+                                    </td>
+                                </tr>
+                            ))}
+                        </tbody>
+                    </table>
+                </div>
 
                 <div className="flex justify-between items-center px-4 py-3 border-t">
                     <button

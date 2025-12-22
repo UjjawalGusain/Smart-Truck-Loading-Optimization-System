@@ -54,7 +54,9 @@ const Dashboard = () => {
     return (
         <div className="w-full h-full">
 
-            <header className="h-12 px-6 flex items-center justify-between border-b bg-white">
+
+            <header className="px-6 py-2 flex flex-wrap items-center justify-between gap-4 border-b bg-white">
+
 
                 <div className="flex flex-col leading-tight">
                     <span className="text-sm font-semibold text-gray-800">

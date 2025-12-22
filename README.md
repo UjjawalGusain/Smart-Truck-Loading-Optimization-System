@@ -4,6 +4,9 @@
 
 - [Introduction](#introduction)
 - [Deployment Link](#deployment-link)
+- [Demo Video](#demo-video)
+- [Test Emails](#test-emails)
+- [Website Screenshots](#website-screenshots)
 - [Frontend Documentation](#frontend-documentation)
   - [Tech Stack](#tech-stack)
   - [Architecture Overview](#architecture-overview)
@@ -37,6 +40,24 @@ Truckster-Singh is a logistics and fleet management platform designed to streaml
 
 ## Deployment Link: 
 [https://truckster-singh.vercel.app](https://truckster-singh.vercel.app)
+
+## Demo Video:
+[https://drive.google.com/file/d/1JegYYDjkrmePKibuW9RqR5MwqISl0W0k/view?usp=drive_link](https://drive.google.com/file/d/1JegYYDjkrmePKibuW9RqR5MwqISl0W0k/view?usp=drive_link)
+
+## Website Screenshots:
+<img width="1920" height="946" alt="Screenshot from 2025-12-22 12-48-40" src="https://github.com/user-attachments/assets/f8aca6ff-cdc0-4135-9b24-131d679fad0d" />
+
+<img width="1920" height="946" alt="Screenshot from 2025-12-22 12-48-47" src="https://github.com/user-attachments/assets/5a31fbad-fd88-4c6b-b734-ff2b83b98d66" />
+
+<img width="1920" height="946" alt="Screenshot from 2025-12-22 12-49-12" src="https://github.com/user-attachments/assets/a32df989-68c3-4f3f-886b-3a27ef621abe" />
+
+<img width="1920" height="946" alt="Screenshot from 2025-12-22 12-49-23" src="https://github.com/user-attachments/assets/3a19cb1c-9e9a-4952-930e-741b61f19541" />
+
+<img width="1920" height="946" alt="Screenshot from 2025-12-22 12-49-45" src="https://github.com/user-attachments/assets/13c8607a-bd9e-48e9-bc74-adc3ce256ace" />
+
+## Test Emails:
+- **Warehouse User**: {email: mtalons123@gmail.com, password: Test@123}
+- **Truck Dealer**: {email: ujjawalgusain31@gmail.com, password: Test@123}
 
 ## Frontend Documentation
 

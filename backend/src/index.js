@@ -1,6 +1,6 @@
-import express from "express"
-import cors from "cors"
-import 'dotenv/config'
+import express from "express";
+import cors from "cors";
+import "dotenv/config";
 import connectDB from "./db/connect.js";
 import cookieParser from "cookie-parser";
 
@@ -14,36 +14,33 @@ import truckRouter from "./routes/truck.route.js";
 const app = express();
 const PORT = process.env.PORT;
 
-const corsOptions = {
+app.use(cors({
     origin: [process.env.ALLOWED_ORIGIN],
-    credentials: true,
-    methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
-    allowedHeaders: ['Content-Type', 'Authorization']
+    credentials: true
+}));
+app.use(express.json({ limit: "16kb" }));
+app.use(express.urlencoded({ extended: true, limit: "16kb" }));
+app.use(cookieParser());
+
+app.use("/api/auth", authRouter);
+app.use("/api/warehouse", warehouseRouter);
+app.use("/api/truck-dealer", truckDealerRouter);
+app.use("/api/user", userRouter);
+app.use("/api/shipment", shipmentRouter);
+app.use("/api/truck", truckRouter);
+
+const startServer = async () => {
+    try {
+        await connectDB();
+
+        app.listen(PORT, () => {
+            console.log(`Server listening on port ${PORT}`);
+        });
+
+    } catch (error) {
+        console.error("Fatal DB connection error:", error);
+        process.exit(1);
+    }
 };
-app.use(cors(corsOptions));
 
-app.use(express.json({ limit: "16kb" }))
-app.use(express.urlencoded({ extended: true, limit: "16kb" }))
-app.use(express.static("public"))
-app.use(cookieParser())
-
-
-
-try {
-    connectDB();
-} catch (error) {
-    console.error("Error connecting to db: ", error);
-}
-
-
-app.use('/api/auth', authRouter);
-app.use('/api/warehouse', warehouseRouter);
-app.use('/api/truck-dealer', truckDealerRouter);
-app.use('/api/user', userRouter);
-app.use('/api/shipment', shipmentRouter);
-app.use('/api/truck', truckRouter);
-
-
-app.listen(PORT, () => {
-    console.log(`Example app listening on port ${PORT}`)
-})
+startServer();

@@ -62,6 +62,7 @@ const TruckSection = ({
                     <option value="">All Status</option>
                     <option value="ACTIVE">ACTIVE</option>
                     <option value="MAINTENANCE">MAINTENANCE</option>
+                    <option value="RETIRED">RETIRED</option>
                 </select>
 
                 <button

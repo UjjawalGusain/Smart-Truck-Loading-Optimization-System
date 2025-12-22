@@ -6,6 +6,7 @@ import DashboardHeader from "./TruckDealerDashboard/DashboardHeader.jsx";
 import AddTrucks from "./TruckDealerDashboard/AddTrucks.jsx";
 import DashboardKpi from "./TruckDealerDashboard/DashboardKPI.jsx";
 import TruckSection from "./TruckDealerDashboard/TruckSection.jsx";
+import TruckUtilizationChart from "./TruckDealerDashboard/TruckUtilizationChart.jsx";
 
 const TruckDealerDashboard = () => {
     const { loading } = useUser();
@@ -103,31 +104,35 @@ const TruckDealerDashboard = () => {
 
     return (
         <div className="min-h-screen bg-gray-50">
-            <DashboardHeader
-                truckDealer={truckDealer}
-                onAddTrucks={() => setShowAddTrucks(true)}
-            />
-
-            {showAddTrucks && (
-                <AddTrucks
-                    onClose={() => setShowAddTrucks(false)}
-                    onSuccess={fetchTrucks}
+            <div id="dashboard-pdf">
+                <DashboardHeader
+                    truckDealer={truckDealer}
+                    onAddTrucks={() => setShowAddTrucks(true)}
                 />
-            )}
+                <TruckUtilizationChart truckDealerId={truckDealer._id} />
 
-            <div className="px-6 py-6 space-y-6">
-                <DashboardKpi />
+                {showAddTrucks && (
+                    <AddTrucks
+                        onClose={() => setShowAddTrucks(false)}
+                        onSuccess={fetchTrucks}
+                    />
+                )}
 
-                <TruckSection
-                    trucks={trucks}
-                    setTrucks={setTrucks}
-                    filters={filters}
-                    setFilters={setFilters}
-                    page={page}
-                    setPage={setPage}
-                    totalPages={totalPages}
-                />
+                <div className="px-6 py-6 space-y-6">
+                    <DashboardKpi />
+
+                    <TruckSection
+                        trucks={trucks}
+                        setTrucks={setTrucks}
+                        filters={filters}
+                        setFilters={setFilters}
+                        page={page}
+                        setPage={setPage}
+                        totalPages={totalPages}
+                    />
+                </div>
             </div>
+
         </div>
     );
 };

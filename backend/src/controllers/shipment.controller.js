@@ -311,7 +311,7 @@ class ShipmentController {
                         return res.status(404).json({ message: "Truck not found" });
                     }
 
-                    shipment.assignedTruckId = truckId;
+                    shipment.truckId = truckId;
                 }
 
                 shipment.status = nextStatus;
@@ -336,7 +336,7 @@ class ShipmentController {
         } catch (error) {
             await session.abortTransaction();
             session.endSession();
-            return res.status(500).json({ message: "Error updating shipment" });
+            return res.status(500).json({ message: "Error updating shipment", error });
         }
     }
 

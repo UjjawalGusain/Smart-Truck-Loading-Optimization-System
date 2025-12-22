@@ -29,6 +29,10 @@ const APIS = {
     getAllWarehouses: `${BASE_URL}/api/warehouse/get-warehouses`, //protected
 
     createWarehouse: `${BASE_URL}/api/warehouse/create`, //protected
+    bestFitTruck: `${BASE_URL}/api/warehouse/best-fit-truck`, //protected
+    bestFitCalculator: `${BASE_URL}/api/warehouse/best-fit-calculator`, //protected
+    bookedEmail: `${BASE_URL}/api/warehouse/booked-email`, //protected
+    getShipmentStats: `${BASE_URL}/api/warehouse/shipment-stats`, //protected //:warehouseId
 
     createShipment: `${BASE_URL}/api/shipment`, //protected
     getShipments: `${BASE_URL}/api/shipment`, //protected
@@ -40,9 +44,12 @@ const APIS = {
     getTruckDealerDashboardKPI: `${BASE_URL}/api/truck-dealer/dashboard-kpi`, //protected
     getTrucks: `${BASE_URL}/api/truck-dealer`, //protected //:truckDealerId
 
+
     createTrucks: `${BASE_URL}/api/truck/create-many`, //protected
     deleteTruck: `${BASE_URL}/api/truck`, //protected
     updateTruck: `${BASE_URL}/api/truck`, //protected
+    getTruckStats: `${BASE_URL}/api/truck/truck-stats`, //protected /:truckDealerId
+
 
 
 }

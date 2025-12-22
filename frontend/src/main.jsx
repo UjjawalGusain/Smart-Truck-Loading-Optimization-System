@@ -5,7 +5,7 @@ import { UserProvider } from './context/UserProvider.jsx'
 
 import router from './router.jsx'
 import './index.css'
-
+import './pdf-safe.css'
 
 createRoot(document.getElementById('root')).render(
     <StrictMode>

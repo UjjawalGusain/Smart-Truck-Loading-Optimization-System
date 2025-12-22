@@ -85,7 +85,18 @@ const Login = () => {
                             Login
                         </button>
 
+                        <button
+                            type="button"
+                            className="w-full mt-4 py-2 bg-black text-white rounded-md hover:bg-gray-800 transition hover:cursor-pointer"
+                            onClick={() => { navigate('/signup') }}
+                        >
+                            New here? Signup
+                        </button>
+
+
                     </form>
+
+
                 </div>
             </div>
             <div className="hidden lg:block w-1/2 h-full">

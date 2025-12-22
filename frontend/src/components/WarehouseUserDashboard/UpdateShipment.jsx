@@ -22,13 +22,11 @@ const UpdateShipment = ({ shipment, onClose, onSuccess }) => {
     const handleUpdate = async () => {
         setError("");
 
-        // Validate status
         if (form.changeStatus && form.changeStatus !== nextStatus) {
             setError(`Cannot skip status. Next allowed status is ${nextStatus}.`);
             return;
         }
 
-        // Validate truckId for BOOKED
         if (form.changeStatus === "BOOKED" && !form.truckId) {
             setError("Truck ID is required to book a shipment.");
             return;

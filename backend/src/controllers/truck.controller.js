@@ -2,6 +2,7 @@ import Truck from "./../models/truck.model.js";
 import TruckDealer from "./../models/truckDealer.model.js"
 import ServiceRoute from "./../models/serviceRoutes.model.js";
 import TruckServiceRoute from "./../models/truckServiceRoutes.model.js";
+import Shipment from "./../models/shipment.model.js";
 import { object, string, number, array, date } from "yup";
 import mongoose from "mongoose";
 
@@ -248,6 +249,7 @@ class TruckController {
     async updateTruck(req, res) {
         const user = req.user;
         const { truckId } = req.body;
+        console.log("Truck id: ", truckId);
 
         if (user.userType !== "TRUCK_DEALER") {
             return res.status(403).json({ message: "User is not a truck dealer" });
@@ -365,6 +367,50 @@ class TruckController {
             });
         }
     }
+
+    async getTruckUtilization(req, res) {
+        try {
+            const { truckDealerId } = req.params;
+            const trucks = await Truck.find({ status: "ACTIVE", truckDealerId });
+
+            const utilizationData = await Promise.all(
+                trucks.map(async (truck) => {
+                    const shipments = await Shipment.find({
+                        truckId: new mongoose.Types.ObjectId(truck._id),
+                        status: { $in: ["BOOKED", "IN-TRANSIT", "DELIVERED"] },
+                    });
+
+                    const totalWeight = shipments.reduce((sum, sh) => sum + sh.weightTons, 0);
+                    const totalVolume = shipments.reduce((sum, sh) => sum + sh.volumeM3, 0);
+
+                    const utilization = truck.maxWeightTons
+                        ? Math.min((totalWeight / truck.maxWeightTons) * 100, 100)
+                        : 0;
+
+                    return {
+                        truckId: truck._id,
+                        modelCode: truck.modelCode,
+                        utilizationPercentage: Number(utilization.toFixed(1)),
+                        totalShipments: shipments.length,
+                        totalWeight,
+                        totalVolume,
+                        maxWeightTons: truck.maxWeightTons,
+                        maxVolumeM3: truck.maxVolumeM3,
+                    };
+                })
+            );
+
+
+            const topTrucks = utilizationData
+                .sort((a, b) => b.utilizationPercentage - a.utilizationPercentage)
+                .slice(0, 5);
+
+            return res.status(200).json({ data: topTrucks });
+        } catch (err) {
+            console.error("Error fetching truck utilization:", err);
+            return res.status(500).json({ message: "Error fetching truck utilization" });
+        }
+    };
 
 
 }

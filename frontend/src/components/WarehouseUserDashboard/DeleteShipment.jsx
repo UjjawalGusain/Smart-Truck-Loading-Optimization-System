@@ -14,6 +14,7 @@ const DeleteShipment = ({ shipmentId, onClose, onDelete }) => {
 
                     <p className="text-gray-600 text-sm mb-6">
                         Are you sure you want to delete this shipment? This action cannot be undone.
+                        <block className="text-white bg-amber-700">(Shipment cannot be deleted if the shipment is either In-Transit or Delievered)</block>
                     </p>
 
                     <div className="flex justify-end gap-3">

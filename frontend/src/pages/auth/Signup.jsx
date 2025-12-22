@@ -138,6 +138,14 @@ const Signup = () => {
                         >
                             Sign Up
                         </button>
+
+                        <button
+                            type="button"
+                            className="w-full mt-4 py-2 bg-black text-white rounded-md hover:bg-gray-800 transition hover:cursor-pointer"
+                            onClick={() => { navigate('/login') }}
+                        >
+                            Already registered? Login
+                        </button>
                     </form>
                     {isOtpSent && (<div className="mt-2">OTP sent to your email!</div>)}
                 </div>

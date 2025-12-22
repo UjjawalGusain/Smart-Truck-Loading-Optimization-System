@@ -3,6 +3,7 @@
 ## Table of Contents
 
 - [Introduction](#introduction)
+- [Acknowledgement](#acknowledgement)
 - [Deployment Link](#deployment-link)
 - [Demo Video](#demo-video)
 - [Test Emails](#test-emails)
@@ -37,6 +38,14 @@
 ## Introduction
 
 Truckster-Singh is a logistics and fleet management platform designed to streamline shipment planning, truck assignment, and delivery tracking between warehouses and truck dealers. The system enforces structured shipment lifecycles, supports capacity-based optimization, and provides operational insights through real-time analytics and dashboards.
+
+## Acknowledgement
+
+This project was built as part of a Flipr Labs 30.1 (Fullstack Web Development) - Smart Truck Loading Optimization System hackathon focused on solving real-world logistics challenges. The idea behind *Truckster-Singh* comes from a simple but common problem we see everywhere — trucks running half-empty due to poor coordination between warehouses and truck dealers.
+
+The hackathon gave us the opportunity to think beyond just building an app and instead focus on efficiency, optimization, and impact. It pushed us to design a system that improves truck utilization, reduces unnecessary trips, and promotes smarter logistics decisions, while still keeping the workflows practical and easy to use.
+
+We’re grateful to **Flipr Labs** for creating this challenge and providing a platform that encouraged hands-on problem-solving, creativity, and learning through building.
 
 ## Deployment Link: 
 [https://truckster-singh.vercel.app](https://truckster-singh.vercel.app)
